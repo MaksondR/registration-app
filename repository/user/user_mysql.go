@@ -39,20 +39,20 @@ func (m *mysqlUserRepo) RegisterUser(ctx context.Context, u *model.User) (err er
 }
 
 
-func (m *mysqlUserRepo) UpdateAdmin(ctx context.Context, u *model.User) (user *model.User, err error) {
-	query := "UPDATE User SET role=? WHERE id=?"
+func (m *mysqlUserRepo) UpdateAdmin(ctx context.Context, u *model.User) (err error) {
+	query := "UPDATE User SET role=? WHERE login=?"
 
 	stmt, err := m.Conn.PrepareContext(ctx, query)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	_, err = stmt.ExecContext(ctx, u.Role, u.Id)
+	_, err = stmt.ExecContext(ctx, u.Role, u.Login)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	defer stmt.Close()
 
-	return u, nil
+	return nil
 }

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"github.com/go-chi/chi"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -39,7 +40,34 @@ func (u *User) RegisterUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		helper.RespondWithError(w, http.StatusInternalServerError, "Server Error")
 	} else {
-		helper.RespondWithJWT(w, http.StatusCreated, map[string]string{"message": "Successfully Created"})
+		helper.RespondWithJWT(w, map[string]string{"message": "Successfully Created"})
+	}
+}
+
+func (u *User) UpdateRole(w http.ResponseWriter, r *http.Request) {
+	token := chi.URLParam(r, "token")
+
+	if helper.JwtValidate(token) {
+		helper.RespondWithError(w, http.StatusForbidden, "Invalid authorization token!")
+	}
+
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	user := model.User{}
+
+	error := json.Unmarshal(reqBody, &user)
+	if error != nil {
+		helper.RespondWithError(w, http.StatusInternalServerError, "Unmarshal JSON Error!")
+	}
+
+	err = u.repo.UpdateAdmin(r.Context(), &user)
+	if err != nil {
+		helper.RespondWithError(w, http.StatusInternalServerError, "Server Error")
+	} else {
+		helper.RespondWithJSON(w, http.StatusOK, map[string]string{"message": "Role successfully changed!"})
 	}
 }
 

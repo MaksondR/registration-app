@@ -23,5 +23,6 @@ func main()  {
 	uHandler := handler.NewUserHandler(connection)
 
 	router.Post("/users", uHandler.RegisterUser)
+	router.Put("/admins/{token}", uHandler.UpdateRole)
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

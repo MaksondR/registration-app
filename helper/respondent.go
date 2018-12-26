@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/dgrijalva/jwt-go"
 	"net/http"
-	"registration-app/model"
 )
 
 func RespondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
@@ -19,16 +18,12 @@ func RespondWithError(w http.ResponseWriter, code int, msg string) {
 	RespondWithJSON(w, code, map[string]string{"message": msg})
 }
 
-func RespondWithJWT(w http.ResponseWriter, code int, payload interface{}){
+func RespondWithJWT(w http.ResponseWriter, payload interface{}){
 	jsonPayload, _ := json.Marshal(payload)
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"code" : code,
-	})
-
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{})
 	tokenString, _ := token.SignedString([]byte("key"))
 
-	json.NewEncoder(w).Encode(model.JwtToken{Token:tokenString})
-
+	json.NewEncoder(w).Encode("{token: " + tokenString + "}")
 	w.Write(jsonPayload)
 }
