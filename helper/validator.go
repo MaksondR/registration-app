@@ -10,7 +10,7 @@ func JwtValidate(token string) bool{
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return false, fmt.Errorf("Incorrect signing method!")
 		}
-		return []byte("secret"), nil
+		return []byte("key"), nil
 	})
 	if tk.Valid {
 		return true
