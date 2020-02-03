@@ -11,7 +11,7 @@ func JwtValidate(token string) bool {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return false, fmt.Errorf("Incorrect signing method!")
 		}
-		return []byte("key"), nil
+		return []byte("secret"), nil
 	})
 	if err != nil {
 		return false
@@ -21,5 +21,4 @@ func JwtValidate(token string) bool {
 	} else {
 		return false
 	}
-
 }

@@ -3,9 +3,9 @@ package user
 import (
 	"context"
 	"database/sql"
-	"registration-app/helper"
-	"registration-app/model"
-	uRepo "registration-app/repository"
+	"registration-app/pkg/helper"
+	"registration-app/pkg/profile/model"
+	uRepo "registration-app/pkg/profile/repository"
 )
 
 func NewSQLUserRepo(Conn *sql.DB) uRepo.UserRepo {

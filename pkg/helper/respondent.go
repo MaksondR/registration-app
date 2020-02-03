@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/dgrijalva/jwt-go"
 	"net/http"
-	"registration-app/model"
+	"registration-app/pkg/profile/model"
 )
 
 func RespondWithJSON(w http.ResponseWriter, code int, payload interface{}) {

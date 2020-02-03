@@ -2,10 +2,13 @@ package main
 
 import (
 	"log"
+	"net"
 	"net/http"
-	"registration-app/driver"
-	"registration-app/handler"
-	"registration-app/mdlwr"
+	"net/rpc"
+	"net/rpc/jsonrpc"
+	authHandler "registration-app/pkg/auth/handler"
+	"registration-app/pkg/profile/driver"
+	"registration-app/pkg/profile/handler"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -18,14 +21,46 @@ func main() {
 		panic(err)
 	}
 
+	go runProfileApp(connection)
+	runAuthApp()
+}
+
+func runProfileApp(dbConn *driver.DB) {
 	router := chi.NewRouter()
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.Logger)
-	router.Use(mdlwr.AuthMiddleware)
 
-	uHandler := handler.NewUserHandler(connection)
+	uHandler := handler.NewUserHandler(dbConn)
 
 	router.Post("/users", uHandler.RegisterUser)
 	router.Put("/api/admins", uHandler.UpdateRole)
 	log.Fatal(http.ListenAndServe(":8080", router))
+}
+
+func runAuthApp() {
+	err := rpc.Register(&authHandler.Handler{})
+
+	if err != nil {
+		log.Fatal("Register error: ", err)
+	}
+
+	tcpAddr, err := net.ResolveTCPAddr("tcp", ":1234")
+
+	if err != nil {
+		log.Fatal("Error: ", err)
+	}
+
+	listener, err := net.ListenTCP("tcp", tcpAddr)
+
+	if err != nil {
+		log.Fatal("Listen error: ", err)
+	}
+
+	for {
+		conn, err := listener.Accept()
+		if err != nil {
+			continue
+		}
+		jsonrpc.ServeConn(conn)
+	}
 }

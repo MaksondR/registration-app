@@ -1,8 +1,8 @@
 package repository
 
 import (
-"context"
-"registration-app/model"
+	"context"
+	"registration-app/pkg/profile/model"
 )
 
 type UserRepo interface {

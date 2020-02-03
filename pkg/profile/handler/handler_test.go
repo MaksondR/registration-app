@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"net/http"
 	"net/http/httptest"
-	"registration-app/driver"
-	"registration-app/handler"
-	"registration-app/helper"
+	"registration-app/pkg/helper"
+	"registration-app/pkg/profile/driver"
+	"registration-app/pkg/profile/handler"
 	"testing"
 
 	"github.com/go-chi/chi"

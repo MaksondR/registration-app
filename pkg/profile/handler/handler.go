@@ -5,11 +5,11 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"registration-app/driver"
-	"registration-app/helper"
-	"registration-app/model"
-	"registration-app/repository"
-	"registration-app/repository/user"
+	"registration-app/pkg/helper"
+	"registration-app/pkg/profile/driver"
+	"registration-app/pkg/profile/model"
+	"registration-app/pkg/profile/repository"
+	"registration-app/pkg/profile/repository/user"
 )
 
 func NewUserHandler(db *driver.DB) *User {
